@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa Học 8 - Muối (Roblox Simple)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            loader: { load: ['[tex]/mhchem'] },
+            tex: {
+                packages: {'[+]': ['mhchem']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            chtml: {
+                displayAlign: 'center'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <!-- Font: Hanken Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #111216; /* Darker, cleaner background */
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Roblox Colors Simplified */
+        .rbx-panel { background-color: #2b2d31; border: 1px solid #393b3d; }
+        .rbx-green { background-color: #00b06f; transition: background-color 0.2s; }
+        .rbx-green:hover { background-color: #008753; }
+        
+        /* Utility */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animations */
+        @keyframes floatAvatar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Tab Styles */
+        .tab-btn {
+            position: relative;
+            color: #9ca3af;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+        .tab-btn.active {
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        /* Modal Transition */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.2s ease-out; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- MINIMAL NAV BAR -->
+    <nav class="h-16 flex items-center justify-between px-4 md:px-8 border-b border-gray-800 bg-[#1a1c20] sticky top-0 z-40">
+        <div class="flex items-center gap-4">
+            <!-- Logo -->
+            <div class="text-2xl font-extrabold italic tracking-tight text-white flex items-center gap-2">
+                <div class="w-8 h-8 bg-white rounded border-2 border-gray-400 transform rotate-12"></div>
+                CHEMBLOX
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <span class="hidden md:inline text-sm font-bold text-gray-400 bg-gray-800 px-3 py-1 rounded-full">12.5k Active</span>
+            <div class="w-8 h-8 bg-gray-600 rounded-full overflow-hidden border border-gray-500">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar">
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow w-full max-w-5xl mx-auto p-4 md:p-6">
+
+        <!-- HERO SECTION (Game Info - NO THUMBNAIL) -->
+        <div class="mb-8 p-8 bg-[#1a1c20] rounded-2xl border border-gray-800 shadow-xl">
+            <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2 leading-tight">Vương Quốc Muối <span class="text-gray-500 text-2xl font-normal align-middle">[HÓA 8]</span></h1>
+                
+                <div class="flex flex-wrap justify-center items-center gap-4 text-sm text-gray-400 font-bold mb-8">
+                    <span class="flex items-center gap-1 text-white"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> 92%</span>
+                    <span>•</span>
+                    <span>By Dev_Lam Studios</span>
+                    <span>•</span>
+                    <span>Updated Today</span>
+                </div>
+
+                <button id="main-play-btn" class="w-full md:w-2/3 rbx-green text-white font-extrabold text-2xl py-4 rounded-xl shadow-lg transform active:scale-95 transition flex justify-center items-center gap-3 mb-4 ring-4 ring-green-900/30">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    PLAY
+                </button>
+                <p class="text-xs text-center text-gray-500 font-medium">Server an toàn • Phù hợp mọi lứa tuổi</p>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="border-b border-gray-700 mb-6 sticky top-16 bg-[#111216] z-30 pt-2">
+            <div class="flex gap-8 overflow-x-auto no-scrollbar">
+                <button onclick="switchTab('about')" id="tab-about" class="tab-btn active text-lg whitespace-nowrap">About</button>
+                <button onclick="switchTab('store')" id="tab-store" class="tab-btn text-lg whitespace-nowrap">Store (Cấu tạo)</button>
+                <button onclick="switchTab('servers')" id="tab-servers" class="tab-btn text-lg whitespace-nowrap">Servers (Danh pháp)</button>
+                <button onclick="switchTab('badges')" id="tab-badges" class="tab-btn text-lg whitespace-nowrap">Badges (Ứng dụng)</button>
+                <button onclick="switchTab('obby')" id="tab-obby" class="tab-btn text-lg whitespace-nowrap text-red-400">Obby (Test)</button>
+            </div>
+        </div>
+
+        <!-- CONTENT AREA -->
+        <div class="min-h-[300px]">
+
+            <!-- TAB: ABOUT -->
+            <div id="content-about" class="tab-content block animate-fade-in">
+                <div class="rbx-panel p-6 rounded-xl">
+                    <h2 class="text-xl font-bold mb-4">Description</h2>
+                    <div class="text-gray-300 leading-relaxed space-y-4">
+                        <p class="text-lg">👋 Chào mừng đến với <strong class="text-white">Vương Quốc Muối Tycoon</strong>!</p>
+                        <p>Trong tựa game này, bạn sẽ nhập vai thành một nhà giả kim thuật (Alchemist) để khám phá bí mật của vật phẩm <strong class="text-yellow-400">MUỐI</strong> - kết tinh từ tình yêu của Biển Cả.</p>
+                        
+                        <div class="bg-gray-800/50 p-4 rounded-lg border-l-4 border-green-500 my-4">
+                            <h3 class="font-bold text-white mb-1">Cốt Truyện (Lore):</h3>
+                            <p class="text-sm italic">"Biển Cả (Ocean Map) từng rất nhạt nhẽo. Admin Đất Mẹ đã spawn ra NPC <strong>Kim Loại</strong> và <strong>Gốc Axit</strong>. Khi họ 'party' với nhau, vật phẩm Muối rơi ra!"</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                             <div class="bg-black/20 p-3 rounded text-center">
+                                 <div class="text-2xl mb-1">🛠️</div>
+                                 <div class="font-bold text-sm">Build Tool</div>
+                                 <div class="text-xs text-gray-500">Lắp ghép phân tử</div>
+                             </div>
+                             <div class="bg-black/20 p-3 rounded text-center">
+                                 <div class="text-2xl mb-1">🏷️</div>
+                                 <div class="font-bold text-sm">Naming GUI</div>
+                                 <div class="text-xs text-gray-500">Đặt tên item</div>
+                             </div>
+                             <div class="bg-black/20 p-3 rounded text-center">
+                                 <div class="text-2xl mb-1">🏃</div>
+                                 <div class="font-bold text-sm">Obby Run</div>
+                                 <div class="text-xs text-gray-500">Vượt chướng ngại vật</div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: STORE (Cấu tạo) -->
+            <div id="content-store" class="tab-content hidden animate-fade-in">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Blueprint Card -->
+                    <div class="rbx-panel p-6 rounded-xl flex flex-col">
+                        <div class="flex justify-between mb-6">
+                            <h3 class="text-xl font-bold">Item Blueprint</h3>
+                            <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2 py-1 rounded">BLUEPRINT</span>
+                        </div>
+                        
+                        <div class="bg-black/30 p-6 rounded-lg text-center mb-6 border border-dashed border-gray-600">
+                            <div class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">Build Formula</div>
+                            <div class="text-5xl font-extrabold text-white mb-4">$$M_xA_y$$</div>
+                            <div class="flex justify-center gap-3 text-xs font-bold">
+                                <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">M: Kim Loại</span>
+                                <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded">A: Gốc Axit</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 mt-auto">
+                            <div class="p-3 bg-gray-800 rounded flex items-center justify-between">
+                                <span class="font-mono text-gray-400">Recipe 01</span>
+                                <span class="font-bold text-white">$Na + Cl \rightarrow NaCl$</span>
+                            </div>
+                            <div class="p-3 bg-gray-800 rounded flex items-center justify-between">
+                                <span class="font-mono text-gray-400">Recipe 02</span>
+                                <span class="font-bold text-white">$Fe + SO_4 \rightarrow Fe_2(SO_4)_3$</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3D Preview Card -->
+                    <div class="rbx-panel p-6 rounded-xl flex flex-col items-center justify-center relative min-h-[300px]">
+                        <div class="absolute top-4 left-4 text-xs font-bold text-gray-500">3D PREVIEW</div>
+                        <svg width="240" height="180" viewBox="0 0 240 180" class="overflow-visible">
+                            <!-- Metal Head -->
+                            <g style="animation: floatAvatar 3s infinite ease-in-out;">
+                                <rect x="40" y="60" width="60" height="60" rx="10" fill="#fbbf24" stroke="#fff" stroke-width="2"/>
+                                <circle cx="60" cy="80" r="3" fill="#000"/> <circle cx="80" cy="80" r="3" fill="#000"/>
+                                <path d="M60 100 Q70 110 80 100" fill="none" stroke="#000" stroke-width="2"/>
+                                <text x="70" y="50" text-anchor="middle" fill="#fbbf24" font-weight="bold" font-size="14">Na</text>
+                            </g>
+                            
+                            <!-- Connector -->
+                            <rect x="100" y="85" width="40" height="10" fill="#4b5563"/>
+
+                            <!-- Acid Block -->
+                            <g style="animation: floatAvatar 3s infinite ease-in-out; animation-delay: 1.5s;">
+                                <rect x="140" y="60" width="60" height="60" rx="2" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+                                <!-- Studs -->
+                                <circle cx="155" cy="75" r="4" fill="#1d4ed8" opacity="0.5"/>
+                                <circle cx="185" cy="75" r="4" fill="#1d4ed8" opacity="0.5"/>
+                                <circle cx="155" cy="105" r="4" fill="#1d4ed8" opacity="0.5"/>
+                                <circle cx="185" cy="105" r="4" fill="#1d4ed8" opacity="0.5"/>
+                                <text x="170" y="50" text-anchor="middle" fill="#3b82f6" font-weight="bold" font-size="14">Cl</text>
+                            </g>
+                        </svg>
+                        <div class="mt-4 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-bold">Weld Active</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SERVERS (Danh pháp) -->
+            <div id="content-servers" class="tab-content hidden animate-fade-in">
+                <div class="rbx-panel rounded-xl overflow-hidden">
+                    <!-- Header Rule -->
+                    <div class="bg-gradient-to-r from-blue-900 to-blue-800 p-6 text-center">
+                        <div class="inline-block bg-black/40 px-6 py-3 rounded-lg backdrop-blur text-sm md:text-base">
+                            <span class="text-yellow-400 font-extrabold">TÊN MUỐI</span> = 
+                            <span class="text-white font-bold">[Tên Kim Loại]</span> + 
+                            <span class="text-white font-bold">[Tên Gốc Axit]</span>
+                        </div>
+                    </div>
+
+                    <!-- Server List -->
+                    <div class="divide-y divide-gray-700">
+                        <!-- Item 1 -->
+                        <div class="p-4 flex items-center justify-between hover:bg-white/5 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center font-bold text-white text-lg">Fe</div>
+                                <div>
+                                    <div class="font-bold text-white">Sắt (III) Nitrat</div>
+                                    <div class="text-xs text-gray-400 font-mono">$Fe(NO_3)_3$</div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold px-4 py-2 rounded transition">Join</button>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="p-4 flex items-center justify-between hover:bg-white/5 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center font-bold text-white text-lg">Na</div>
+                                <div>
+                                    <div class="font-bold text-white">Natri Sunfat</div>
+                                    <div class="text-xs text-gray-400 font-mono">$Na_2SO_4$</div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold px-4 py-2 rounded transition">Join</button>
+                        </div>
+                        <!-- Item 3 -->
+                         <div class="p-4 flex items-center justify-between hover:bg-white/5 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center font-bold text-white text-lg">Ca</div>
+                                <div>
+                                    <div class="font-bold text-white">Canxi Clorua</div>
+                                    <div class="text-xs text-gray-400 font-mono">$CaCl_2$</div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold px-4 py-2 rounded transition">Join</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: BADGES (Ứng dụng) -->
+            <div id="content-badges" class="tab-content hidden animate-fade-in">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <!-- Badge Card -->
+                    <div class="rbx-panel p-4 rounded-xl text-center hover:-translate-y-1 transition duration-300 cursor-pointer group">
+                        <div class="w-20 h-20 mx-auto bg-gray-800 rounded-full border-2 border-gray-600 mb-3 flex items-center justify-center text-3xl group-hover:border-white transition">🧂</div>
+                        <h4 class="font-bold text-sm text-white truncate">Gia Vị Biển Cả</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">NaCl - Muối ăn</p>
+                    </div>
+
+                    <div class="rbx-panel p-4 rounded-xl text-center hover:-translate-y-1 transition duration-300 cursor-pointer group">
+                        <div class="w-20 h-20 mx-auto bg-gray-800 rounded-full border-2 border-gray-600 mb-3 flex items-center justify-center text-3xl group-hover:border-white transition">🏗️</div>
+                        <h4 class="font-bold text-sm text-white truncate">Thợ Xây</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">CaCO3 - Đá vôi</p>
+                    </div>
+
+                    <div class="rbx-panel p-4 rounded-xl text-center hover:-translate-y-1 transition duration-300 cursor-pointer group">
+                        <div class="w-20 h-20 mx-auto bg-gray-800 rounded-full border-2 border-gray-600 mb-3 flex items-center justify-center text-3xl group-hover:border-white transition">🏥</div>
+                        <h4 class="font-bold text-sm text-white truncate">Healer</h4>
+                        <p class="text-[10px] text-gray-400 mt-1">KMnO4 - Thuốc tím</p>
+                    </div>
+
+                    <!-- Lab Access -->
+                    <div class="rbx-panel p-4 rounded-xl text-center hover:-translate-y-1 transition duration-300 cursor-pointer group bg-gradient-to-br from-purple-900/50 to-gray-800" onclick="openModal()">
+                        <div class="w-20 h-20 mx-auto bg-purple-600 rounded-full border-2 border-purple-400 mb-3 flex items-center justify-center text-3xl shadow-lg shadow-purple-500/20">🧪</div>
+                        <h4 class="font-bold text-sm text-white truncate">Vào Phòng Lab</h4>
+                        <p class="text-[10px] text-gray-300 mt-1">Click to Teleport</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: OBBY (Test) -->
+            <div id="content-obby" class="tab-content hidden animate-fade-in">
+                <!-- Changed h-[500px] to h-[85vh] to maximize iframe size -->
+                <div class="rbx-panel p-1 rounded-xl h-[85vh] flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-10 bg-black/40 z-10 flex items-center justify-between px-4">
+                        <span class="text-xs font-bold text-white font-mono">STAGE: 1/10</span>
+                        <span class="text-xs font-bold text-red-400 font-mono">TIMER: 15:00</span>
+                    </div>
+                    <div class="flex-grow bg-[#4db6ac] relative">
+                         <!-- Placeholder for Iframe -->
+                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <h2 class="text-4xl font-extrabold text-white/30 tracking-tighter">OBBY QUIZ</h2>
+                         </div>
+                         <iframe src="test.html" class="w-full h-full relative z-0 opacity-100" title="Bài kiểm tra"></iframe>
+                    </div>
+                    <button class="bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold py-3 text-center border-t-4 border-yellow-600 active:border-t-0 active:py-4 transition-all">
+                        CHECKPOINT REACHED (NỘP BÀI)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL (Simple) -->
+    <div id="modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="relative bg-[#2b2d31] w-full max-w-4xl h-[70vh] rounded-xl border border-gray-600 shadow-2xl flex flex-col overflow-hidden modal-enter-active">
+            <div class="h-10 bg-[#1a1c20] flex items-center justify-between px-4 border-b border-gray-700">
+                <span class="font-bold text-sm text-gray-300">Simulation View</span>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white font-bold">✕</button>
+            </div>
+            <iframe src="https://1.com" class="w-full h-full border-0 bg-black"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Tab Logic
+        const tabs = ['about', 'store', 'servers', 'badges', 'obby'];
+        
+        function switchTab(tabName) {
+            // Hide all content
+            tabs.forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}`);
+                if(btn) btn.classList.remove('active');
+            });
+
+            // Show target
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // MathJax Refresh
+            if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('modal');
+        function openModal() { modal.classList.remove('hidden'); }
+        function closeModal() { modal.classList.add('hidden'); }
+
+        // Hero Play Button Interaction
+        document.getElementById('main-play-btn').addEventListener('click', () => {
+            const btn = document.getElementById('main-play-btn');
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> LOADING...`;
+            setTimeout(() => {
+                // Scroll to tabs
+                document.querySelector('.border-b').scrollIntoView({ behavior: 'smooth' });
+                btn.innerHTML = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> PLAY`;
+                switchTab('about');
+            }, 800);
+        });
+
+        // Initialize
+        switchTab('about');
+    </script>
+</body>
+</html>
